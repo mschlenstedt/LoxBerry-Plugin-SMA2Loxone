@@ -1,0 +1,5 @@
+{
+   "devices" : [ ],
+   "delay" : 10,
+   "topic" : "sma2mqtt"
+}
