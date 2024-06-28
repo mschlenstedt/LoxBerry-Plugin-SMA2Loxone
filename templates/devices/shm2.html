@@ -1,0 +1,43 @@
+<div data-role="popup" id="popup_device_shm2" data-position-to="window" data-transition="flip" data-theme="a" and data-overlay-theme="a" data-dismissible="true" class="ui-content">
+	<form id="form_shm2">
+		<h3 class="boxtitle ui-title">
+			<span style="vertical-align:middle"><img src="./images/chip_title_32.png"></span>
+			<TMPL_VAR DEVICES.LABEL_TITLE_DEVICE>: shm2
+		</h3>
+
+		<div class="box">
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR COMMON.LABEL_NAME>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="name_shm2" data-mini="true" value="" placeholder="<TMPL_VAR COMMON.LABEL_NAME_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR DEVICES.LABEL_PASSWORD>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="password_shm2" data-mini="true" value="" placeholder="<TMPL_VAR DEVICES.LABEL_PASSWORD_SHM2_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<input type="hidden" id="edit_shm2" value="">
+						<input type="hidden" id="type_shm2" value="shm2">
+						<input type="hidden" id="username_shm2" value="">
+						<input type="hidden" id="address_shm2" value="">
+						<a href="#" onclick="add_device('shm2'); return false;" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-check ui-corner-all"><TMPL_VAR "COMMON.BUTTON_SAVE"></a>
+						<a href="#" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-delete ui-corner-all" data-rel="back"><TMPL_VAR COMMON.BUTTON_CANCEL></a>
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<span id="savinghint_shm2">&nbsp;</span>
+					</div>
+			</div>
+		</div>
+	</form>
+</div>
+

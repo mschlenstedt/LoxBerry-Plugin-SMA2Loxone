@@ -1,0 +1,57 @@
+<div data-role="popup" id="popup_device_speedwireinv" data-position-to="window" data-transition="flip" data-theme="a" and data-overlay-theme="a" data-dismissible="true" class="ui-content">
+	<form id="form_speedwireinv">
+		<h3 class="boxtitle ui-title">
+			<span style="vertical-align:middle"><img src="./images/chip_title_32.png"></span>
+			<TMPL_VAR DEVICES.LABEL_TITLE_DEVICE>: speedwireinv
+		</h3>
+
+		<div class="box">
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR COMMON.LABEL_NAME>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="name_speedwireinv" data-mini="true" value="" placeholder="<TMPL_VAR COMMON.LABEL_NAME_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR DEVICES.LABEL_USERNAME>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="username_speedwireinv" data-mini="true" value="" placeholder="<TMPL_VAR DEVICES.LABEL_USERNAME_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR DEVICES.LABEL_PASSWORD>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="password_speedwireinv" data-mini="true" value="" placeholder="<TMPL_VAR DEVICES.LABEL_PASSWORD_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 15%">
+						<TMPL_VAR DEVICES.LABEL_ADDRESS>
+					</div>
+					<div class="boxitem" style="width:75%">
+						<input type="text" id="address_speedwireinv" data-mini="true" value="" placeholder="<TMPL_VAR DEVICES.LABEL_ADDRESS_HINT>">
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<input type="hidden" id="edit_speedwireinv" value="">
+						<input type="hidden" id="type_speedwireinv" value="speedwireinv">
+						<a href="#" onclick="add_device('speedwireinv'); return false;" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-check ui-corner-all"><TMPL_VAR "COMMON.BUTTON_SAVE"></a>
+						<a href="#" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-delete ui-corner-all" data-rel="back"><TMPL_VAR COMMON.BUTTON_CANCEL></a>
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<span id="savinghint_speedwireinv">&nbsp;</span>
+					</div>
+			</div>
+		</div>
+	</form>
+</div>
+

@@ -32,7 +32,7 @@ lbplogdir = os.popen("perl -e 'use LoxBerry::System; print $lbplogdir; exit;'").
 
 def readconfig(device):
     try:
-        with open('config.json') as f:
+        with open(lbpconfigdir + '/plugin.json') as f:
             global pconfig
             global devices
             global deviceindex

@@ -1,0 +1,204 @@
+<style>
+.datahidden {
+	display:none;
+}
+
+.tiny {
+	font-size:70%;
+}
+
+.small {
+	font-size:80%;
+}
+
+.middle {
+	font-size:120%;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.grayed {
+	color: gray;
+}
+
+.center {
+	text-align: center;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	grid-column-gap: 15px;
+	grid-row-gap: 15px;
+	text-shadow: none;
+}
+
+.box { 
+	border: 1px solid black;
+	border-radius: 5px 5px 5px 5px;
+	padding: 5px;
+}
+
+.boxtitle {
+	background-color: #6dac20;
+	color: white;
+	text-shadow: 1px 1px 2px black;
+	border-radius: 5px 5px 5px 5px;
+	padding: 5px;
+	vertical-align: middle;
+}
+
+.boxrow {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	margin: 0;
+}
+
+.boxitem {
+	padding: 5px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.servicestatus {
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-template-rows: 1fr;
+	gap: 0px 10px;
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
+	text-shadow: none;
+}
+
+.margin {
+	margin: 10px;
+}
+
+.status {
+	padding: 7px;
+	box-sizing: border-box;
+	border-radius: 5px 5px 5px 5px;
+	background: #dfdfdf;
+	border: 1px solid #7E7E7E;
+	width: 170px;
+	text-align: center;
+}
+
+.ui-popup-container
+{
+	width:  50%;
+	height: 80%;
+}
+
+</style>
+
+<div class="servicestatus">
+	<div>
+		Service Status:
+	</div>
+	<div id="servicestatusicon">
+		<img src="./images/unknown_20.png">
+	</div>
+	<div class="status" id="servicestatus">
+		<TMPL_VAR "COMMON.LABEL_UNKNOWN">
+	</div>
+	<div>
+		<a href="#" onclick="servicerestart();return false;" data-role="button" data-inline="true" data-icon="refresh" data-mini="true"
+					data-transition="flow"><TMPL_VAR COMMON.BUTTON_RESTART></a>
+		<a href="#" onclick="servicestop();return false;" data-role="button" data-inline="true" data-icon="delete" data-mini="true"
+					data-transition="flow"><TMPL_VAR COMMON.BUTTON_STOP></a>
+	</div>
+
+</div>
+
+<br>
+
+<div class="grid">
+	<div>
+		<h2 class="boxtitle ui-title">
+			<span style="vertical-align:middle"><img src="./images/chip_title_32.png"></span>
+			<TMPL_VAR "DEVICES.LABEL_DEVICES">
+		</h2>
+		<div class="box">
+			<div class="boxrow">
+					<div class="boxitem small">
+						<TMPL_VAR "DEVICES.LABEL_ADD_DEVICE">
+					</div>
+					<div class="boxitem" style="width:300px">
+							<select name="type" id="type" data-mini="true">
+								<TMPL_VAR "DEVICES_OPTIONS">
+							</select>
+					</div>
+					<div class="boxitem">
+							<a href="#" onclick="popup_add_device(); return false;" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-plus ui-corner-all"><TMPL_VAR "COMMON.BUTTON_ADD"></a>
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem" style="width:900px">
+						<!-- Table -->
+						<div id="devices-list"></div>
+					</div>
+			</div>
+		</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	</div>
+
+
+<div data-role="popup" id="popup_delete_device" data-position-to="window" data-transition="flip" data-theme="a" and data-overlay-theme="a" data-dismissible="true" class="ui-content">
+		<h3 class="boxtitle ui-title">
+			<TMPL_VAR DEVICES.LABEL_DELETE_DEVICE>?
+		</h3>
+
+		<div class="box">
+			<div class="boxrow">
+					<div class="boxitem">
+						<TMPL_VAR DEVICES.HINT_DELETE_DEVICE_1> <b><span id="deletedevicename">&nbsp;</span></b> <TMPL_VAR DEVICES.HINT_DELETE_DEVICE_2>	
+					</div>
+			</div>
+			<br>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<a href="#" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-delete ui-corner-all" data-rel="back"><TMPL_VAR COMMON.BUTTON_CANCEL></a>
+						<a href="#" onclick="delete_device(); return false;" class="ui-btn ui-btn-inline ui-mini ui-btn-icon-left ui-icon-check ui-corner-all"><TMPL_VAR "COMMON.BUTTON_DELETE"></a>
+					</div>
+			</div>
+			<div class="boxrow">
+					<div class="boxitem small" style="width: 90%">
+						<span id="deletedevicehint">&nbsp;</span>
+					</div>
+			</div>
+		</div>
+</div>
+

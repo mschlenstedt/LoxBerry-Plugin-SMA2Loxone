@@ -1,0 +1,104 @@
+<style>
+	.listtable td
+	{
+		vertical-align	:middle;
+		text-align	:center;
+	}
+	.listtable td img
+	{
+		padding		:5px;
+	}
+	.lb_flex-item 
+	{	
+		min-width	:450px;
+		width		:450px;
+		max-width	:450px;
+		flex-wrap	:nowrap;
+		margin-top	:-10px;  
+	}
+	.lb_flex-item-help 
+	{
+		min-width	:100px;
+		width		:100%;
+		position	:relative;
+		margin-left	:10px;
+	}
+	.mqtttable {
+		vertical-align: middle;
+		text-align: left;
+		/* font-size: 90%; */
+		border-collapse: collapse;
+		border: 1px solid grey;
+		padding: 10px;
+		width: 100%;
+		
+	}
+	.mqtttable_vicol, .mqtttable_desccol {
+		border: 1px solid grey;
+		padding: 10px;
+	}
+	.mqtttable_headrow {
+	
+	}
+
+</style>
+
+<form>
+
+<center>
+<p><TMPL_VAR UPGRADE.HINT_LIB></p>
+</center>
+<br><br>
+<form>
+
+<div class="lb_flex-container UPGRADE ui-state-disabled">
+	<div	class="lb_flex-item-label">
+		<TMPL_VAR UPGRADE.LABEL_CURRENT>
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+	<div	class="lb_flex-item">
+		<span id="currentversion"></span>
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+	<div	class="lb_flex-item-help hint">
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+</div>
+
+<div class="lb_flex-container UPGRADE ui-state-disabled">
+	<div	class="lb_flex-item-label">
+		<TMPL_VAR UPGRADE.LABEL_ONLINE>
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+	<div	class="lb_flex-item">
+		<span id="availableversion"></span>
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+	<div	class="lb_flex-item-help hint">
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+</div>
+
+<div style="padding: 0px 0px 20px 0px;"></div>
+
+<div class="lb_flex-container UPGRADE ui-state-disabled">
+	<div	class="lb_flex-item-label">
+	</div>
+	<div	class="lb_flex-item-spacer"></div>
+	<div	class="lb_flex-item">
+	<a href="#" onclick="upgrade(); return false;" id="btnsaveupgrade" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" data-transition="flow"><TMPL_VAR UPGRADE.BUTTON_SAVE></a>
+	<div class="hint" id="savinghint_upgrade">&nbsp;</div>
+	</div>
+	<div class="lb_flex-item-spacer"></div>
+	<div class="lb_flex-item-help hint">
+	</div>
+	<div class="lb_flex-item-spacer"></div>
+</div>
+
+</form>
+
+<script>
+	// Validation
+	validate_enable('#topic');
+</script>
+
