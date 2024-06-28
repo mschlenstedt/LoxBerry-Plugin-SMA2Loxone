@@ -9,6 +9,9 @@ $(function() {
 	if(secpin == null) {
 		console.log("Getting SecurePIN from session storage");
 		secpin = sessionStorage.getItem("securePIN");
+		$("#main").css( 'visibility', 'visible' );
+		getconfig();
+		update_ver();
 	}
 	if(secpin == null) {
 		console.log("SecurePIN is empty in session storage");
@@ -21,11 +24,8 @@ $(function() {
 		checkSecurePIN();
 	});
 	
-	$("#main").css( 'visibility', 'visible' );
 	interval = window.setInterval(function(){ servicestatus(); }, 3000);
-	getconfig();
 	servicestatus();
-	update_ver();
 
 });
 
@@ -291,6 +291,7 @@ function update_ver()
 			type: 'POST',
 			data: { 
 				action: 'getversions',
+				secpin: secpin,
 			}
 		} )
 	.done(function(resp) {
@@ -484,6 +485,8 @@ function checkSecurePIN() {
 		$("#securepin_block").fadeOut();
 		if (secpin) {
 			$("#main").css( 'visibility', 'visible' );
+			getconfig();
+			update_ver();
 		}
 	})
 	.always(function( data ) {

@@ -23,6 +23,7 @@ my $q = $cgi->Vars;
 #LOGSTART "Request $q->{action}";
 
 my $checksecpin = 1;
+my $secpinok = 0;
 
 # CheckSecPin (WebUI SecPin Question)
 if( $q->{action} eq "checksecpin" ) {
@@ -48,28 +49,31 @@ if( $q->{action} eq "servicestatus" ) {
 
 
 # All other requests need to send the SecPIN
-if( $checksecpin eq "1" ) {
+if( $checksecpin ) {
 	my %response;
 	my $seccheck = LoxBerry::System::check_securepin($q->{secpin});
-	if($seccheck) {
+	if($seccheck || !$q->{secpin}) {
 		$response{error} = $seccheck;
 		$response{secpinerror} = 1;
 		$response{message} = "SecurePIN invalid";
 		$response = encode_json( \%response );
+		$checksecpin = 0;
+	} else {
+		$secpinok = 1;
 	}
 }
 
-if( $q->{action} eq "servicerestart" ) {
+if( $q->{action} eq "servicerestart" && $secpinok ){
 	system ("$lbpbindir/watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1");
 	$response = $?;
 }
 
-if( $q->{action} eq "servicestop" ) {
+if( $q->{action} eq "servicestop" && $secpinok ){
 	system ("$lbpbindir/watchdog.pl --action=stop --verbose=0 > /dev/null 2>&1");
 	$response = $?;
 }
 
-if( $q->{action} eq "getversions" ) {
+if( $q->{action} eq "getversions" && $secpinok ){
 	my %versions;
 	my %response;
 	$versions{'current'} = execute("$lbpbindir/upgrade.sh current");
@@ -79,7 +83,7 @@ if( $q->{action} eq "getversions" ) {
 	$response = encode_json( \%response );
 }
 
-if( $q->{action} eq "getconfig" ) {
+if( $q->{action} eq "getconfig" && $secpinok ){
 	if ( -e "$lbpconfigdir/plugin.json" ) {
 		$response = LoxBerry::System::read_file("$lbpconfigdir/plugin.json");
 		if( !$response ) {
@@ -91,13 +95,13 @@ if( $q->{action} eq "getconfig" ) {
 	}
 }
 
-if( $q->{action} eq "upgrade" ) {
+if( $q->{action} eq "upgrade" && $secpinok ){
 	my %response;
 	my ($exitcode, $output) = execute("sudo $lbpbindir/upgrade.sh");
 	$response = $exitcode;
 }
 
-if( $q->{action} eq "savemqtt" ) {
+if( $q->{action} eq "savemqtt" && $secpinok ){
 
 	# Check if all required parameters are defined
 	if (!defined $q->{'topic'} || $q->{'topic'} eq "") {
@@ -119,7 +123,7 @@ if( $q->{action} eq "savemqtt" ) {
 	$response = 0;
 }
 
-if( $q->{action} eq "device" ) {
+if( $q->{action} eq "device" && $secpinok ){
 
 	# Check if all required parameters are defined
 	if (!defined $q->{'name'} || $q->{'name'} eq "") {
@@ -168,7 +172,7 @@ if( $q->{action} eq "device" ) {
 	
 }
 
-if( $q->{action} eq "deletedevice" ) {
+if( $q->{action} eq "deletedevice" && $secpinok ){
 
 	# Check if all required parameters are defined
 	if (!defined $q->{'name'} || $q->{'name'} eq "") {
