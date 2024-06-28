@@ -383,7 +383,7 @@ function getconfig() {
 		});
 		$('#devices-list').empty();
 		if ( data.error || jQuery.isEmptyObject(devices)) {
-			$('#devices-list').html("<TMPL_VAR DEVICES.HINT_NO_MODULES>");
+			$('#devices-list').html("<TMPL_VAR DEVICES.HINT_NO_DEVICES>");
 			devices = undefined;
 		} else {
 			// Create table
