@@ -24,12 +24,12 @@ LOGSTART "Request $q->{action}";
 
 
 if( $q->{action} eq "servicerestart" ) {
-	system ("$lbpbindir/watchdog.pl --action=restart --verbose=1 > /dev/null 2>&1");
+	system ("$lbpbindir/watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1");
 	$response = $?;
 }
 
 if( $q->{action} eq "servicestop" ) {
-	system ("$lbpbindir/watchdog.pl --action=stop --verbose=1 > /dev/null 2>&1");
+	system ("$lbpbindir/watchdog.pl --action=stop --verbose=0 > /dev/null 2>&1");
 	$response = $?;
 }
 
