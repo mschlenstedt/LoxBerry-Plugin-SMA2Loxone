@@ -133,9 +133,9 @@ sub start
 		my $output = qx(pgrep -f "pysma2mqtt.py -d '$devicename'");
 		my $exitcode  = $? >> 8;
 		if ($exitcode != 0) {
-			LOGWARN "SMA2Loxone ﬁor $devicename could not be started";
+			LOGWARN "SMA2Loxone for $devicename could not be started";
 		} else {
-			LOGOK "SMA2Loxone ﬁor $devicename started successfully.";
+			LOGOK "SMA2Loxone for $devicename started successfully.";
 		}
 	}
 	sleep 2;
@@ -187,8 +187,9 @@ sub check
 		my $response = LoxBerry::System::write_file("/dev/shm/sma2loxone-watchdog-fails.dat", "0");
 	}
 
-	my $output = qx(pgrep -f 'pysma2mqtt.py');
+	my $output = qx(pgrep -f pysma2mqtt.py);
 	my $exitcode  = $? >> 8;
+	print "Exitcode: $exitcode\n";
 	if ($exitcode != 0) {
 		LOGWARN "SMA2Loxone seems to be dead - Error $exitcode";
 		my $fails = LoxBerry::System::read_file("/dev/shm/sma2loxone-watchdog-fails.dat");
