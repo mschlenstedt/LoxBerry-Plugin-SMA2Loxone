@@ -66,6 +66,17 @@ else
 	exit 2;
 fi 
 
+echo "<INFO> Start installing Python aiomqtt..."
+yes | python3 -m pip install --upgrade aiomqtt
+INSTALLED=$(pip3 list --format=columns | grep "aiomqtt" | grep -v grep | wc -l)
+if [ ${INSTALLED} -ne "0" ]; then
+	echo "<OK> Python aiomqtt installed successfully."
+else
+	echo "<WARNING> Python aiomqtt installation failed! The plugin will not work without."
+	echo "<WARNING> Giving up."
+	exit 2;
+fi 
+
 echo "<INFO> Adjusting permissions..."
 chown root:root $PBIN/upgrade.sh
 chmod 0755 $PBIN/upgrade.sh
