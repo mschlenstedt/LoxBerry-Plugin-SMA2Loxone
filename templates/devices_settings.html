@@ -1,3 +1,24 @@
+<!-- SecurePIN --> 
+<div id="securepin_block" style="margin: 0 auto; width:350px; display:none">
+	<TMPL_VAR SECUREPIN.ENTER_SECUREPIN>
+	<input name="securepin" id="securepin" type="text" onkeypress="return AddKeyPress(event, $('#check_securepin'));">
+	<button class="ui-btn ui-btn-icon-right ui-corner-all" id="check_securepin" data-inline="true"><TMPL_VAR COMMON.BUTTON_OK></button>
+	
+	<div class="hint" id="check_hint" style="padding: 5px 5px 5px 5px;"></div>
+	<br>
+	<div class="path" style="background: #FF8080; font-color: black; text-shadow: none; border: black 1px solid; padding: 5px;">
+		<p style="font-weight: bold;">
+			<TMPL_VAR SECUREPIN.WARNING_TITLE>
+		</p>
+		<hr>
+		<p>
+			<TMPL_VAR SECUREPIN.PREVENT_SPY>
+		</p>
+	</div>
+</div>
+
+<!-- ****************************************************************************************** -->
+
 <style>
 .datahidden {
 	display:none;
@@ -98,6 +119,8 @@
 
 </style>
 
+<div id="main" style="visibility:hidden;">
+
 <div class="servicestatus">
 	<div>
 		Service Status:
@@ -142,37 +165,10 @@
 			<div class="boxrow">
 					<div class="boxitem" style="width:900px">
 						<!-- Table -->
-						<div id="devices-list"></div>
+						<div id="devices-list"><TMPL_VAR "COMMON.HINT_EXECUTING"></div>
 					</div>
 			</div>
 		</div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
 	</div>
 
 
@@ -202,3 +198,4 @@
 		</div>
 </div>
 
+</div>

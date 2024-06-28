@@ -2,10 +2,29 @@
 var nopidrefresh = "0";
 
 $(function() {
+
+	var secpin = null;
+	$("#main").css( 'visibility', 'hidden' );
+
+	if(secpin == null) {
+		console.log("Getting SecurePIN from session storage");
+		secpin = sessionStorage.getItem("securePIN");
+	}
+	if(secpin == null) {
+		console.log("SecurePIN is empty in session storage");
+		securePINwrong();
+	}
+
+	// Check SecurePIN by ajax and load form data
+	$("#check_securepin").click(function(){
+		console.log("Check securepin called");
+		checkSecurePIN();
+	});
 	
+	$("#main").css( 'visibility', 'visible' );
 	interval = window.setInterval(function(){ servicestatus(); }, 3000);
-	servicestatus();
 	getconfig();
+	servicestatus();
 	update_ver();
 
 });
@@ -13,8 +32,6 @@ $(function() {
 // SERVICE STATE
 
 function servicestatus() {
-	$.mobile.loading().hide();
-	$.mobile.loading( "hide" );
 
 	if (nopidrefresh === "1") {
 		return;
@@ -60,7 +77,8 @@ function servicerestart() {
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
-				action: 'servicerestart'
+				action: 'servicerestart',
+				secpin: secpin,
 			}
 		} )
 	.fail(function( data ) {
@@ -89,7 +107,8 @@ function servicestop() {
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
-				action: 'servicestop'
+				action: 'servicestop',
+				secpin: secpin,
 			}
 		} )
 	.fail(function( data ) {
@@ -132,7 +151,8 @@ function popup_edit_device(devicename) {
 		url:  'ajax.cgi',
 		type: 'POST',
 		data: {
-			action: 'getconfig'
+			action: 'getconfig',
+			secpin: secpin,
 		}
 	})
 	.fail(function( data ) {
@@ -181,6 +201,7 @@ function add_device(type) {
 				address: $("#address_" + type).val(),
 				type: $("#type_" + type).val(),
 				edit: $("#edit_" + type).val(),
+				secpin: secpin,
 			}
 		} )
 	.fail(function( data ) {
@@ -358,7 +379,6 @@ function getconfig() {
 	})
 	.done(function( data ) {
 		console.log( "getconfig Success", data );
-		$("#main").css( 'visibility', 'visible' );
 
 		// MQTT
 
@@ -422,6 +442,62 @@ function getconfig() {
 		console.log( "getconfig Finished" );
 	})
 
+}
+
+// SecurePIN
+function checkSecurePIN() {
+	console.log("Checking SecurePin");
+	$("#check_securepin").attr("disabled", true);
+	$("#check_hint").attr("style", "color:blue;").html("<TMPL_VAR SECUREPIN.CHECK_WAIT>");
+	$.ajax({ 
+			url:  'ajax.cgi',
+			type: 'POST',
+			data: { action: 'checksecpin', secpin: $('#securepin').val() }
+	})
+	.fail(function( data ) {
+		securePINwrong();
+		return;
+	})
+	.done(function( data ) {
+		if( data.error && data.error != 0 ) {
+			console.log( "Error detected", data.error );
+			data.message = '<TMPL_VAR SECUREPIN.ERROR_WRONG>';
+			console.log( "Message:", data.message );
+			$("#check_hint").attr("style", "color:red").html(data.message);
+			secpin = null;
+			return;
+		}
+		// Save PIN to session storage
+		sessionStorage.setItem("securePIN", $('#securepin').val());
+		secpin = $('#securepin').val();
+		$("#securepin_block").fadeOut();
+		if (secpin) {
+			$("#main").css( 'visibility', 'visible' );
+		}
+	})
+	.always(function( data ) {
+		console.log( "checksecpin Finished" );
+		$("#check_securepin").attr("disabled", false);
+	});
+}
+
+function securePINwrong() {
+	console.log( "checksecpin Fail");
+	$("#check_hint").attr("style", "color:red").html("<TMPL_VAR SECUREPIN.ERROR_GENERIC>");
+	$("#securepin_block").fadeIn();
+	$("#main").css( 'visibility', 'hidden' );
+	
+	return;
+}
+
+function AddKeyPress(event, submitobj ) { 
+	// look for window.event in case event isn't passed in
+	event = event || window.event;
+	if (event.keyCode == 13) {
+		submitobj.click();
+		return false;
+	}
+	return true;
 }
 
 </script>

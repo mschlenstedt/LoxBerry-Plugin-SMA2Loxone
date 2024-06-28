@@ -113,7 +113,9 @@ sub start
 	sleep 2;
 	foreach my $device ( @{$cfg->{"devices"}} ) {
 		# Logging
-		my $sublog = LoxBerry::Log->new (  name => "sma2loxone_" . $device->{"name"},
+		my $logname = $device->{"name"};
+		$logname =~ s/\s*//g;
+		my $sublog = LoxBerry::Log->new (  name => "$logname",
 		package => 'sma2loxone',
 		logdir => "$lbplogdir",
 		addtime => 1,

@@ -22,18 +22,18 @@ my $q = $cgi->Vars;
 
 #LOGSTART "Request $q->{action}";
 
+my $checksecpin = 1;
 
-if( $q->{action} eq "servicerestart" ) {
-	system ("$lbpbindir/watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1");
-	$response = $?;
-}
-
-if( $q->{action} eq "servicestop" ) {
-	system ("$lbpbindir/watchdog.pl --action=stop --verbose=0 > /dev/null 2>&1");
-	$response = $?;
+# CheckSecPin (WebUI SecPin Question)
+if( $q->{action} eq "checksecpin" ) {
+	my %response;
+	$response{error} = &checksecpin();
+	$response = encode_json( \%response );
+	$checksecpin = 0;
 }
 
 if( $q->{action} eq "servicestatus" ) {
+	$checksecpin = 0;
 	my $status;
 	my $count = `pgrep -c -f "pysma2mqtt.py"`;
 	if ($count >= "2") {
@@ -44,6 +44,29 @@ if( $q->{action} eq "servicestatus" ) {
 	);
 	chomp (%response);
 	$response = encode_json( \%response );
+}
+
+
+# All other requests need to send the SecPIN
+if( $checksecpin eq "1" ) {
+	my %response;
+	my $seccheck = LoxBerry::System::check_securepin($q->{secpin});
+	if($seccheck) {
+		$response{error} = $seccheck;
+		$response{secpinerror} = 1;
+		$response{message} = "SecurePIN invalid";
+		$response = encode_json( \%response );
+	}
+}
+
+if( $q->{action} eq "servicerestart" ) {
+	system ("$lbpbindir/watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1");
+	$response = $?;
+}
+
+if( $q->{action} eq "servicestop" ) {
+	system ("$lbpbindir/watchdog.pl --action=stop --verbose=0 > /dev/null 2>&1");
+	$response = $?;
 }
 
 if( $q->{action} eq "getversions" ) {
@@ -192,4 +215,15 @@ else {
 
 END {
 	#LOGEND if($log);
+}
+
+sub checksecpin
+{
+	my $error;
+	if ( LoxBerry::System::check_securepin($q->{secpin}) ) {
+		$error = 1;
+	} else {
+		$error = 0;
+	}
+	return ($error);
 }
