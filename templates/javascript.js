@@ -73,6 +73,7 @@ function servicerestart() {
 	nopidrefresh = "1";
 	$("#servicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
 	$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -103,6 +104,7 @@ function servicestop() {
 	nopidrefresh = "1";
 	$("#servicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
 	$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -147,6 +149,7 @@ function popup_add_device() {
 function popup_edit_device(devicename) {
 
 	// Ajax request
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax({ 
 		url:  'ajax.cgi',
 		type: 'POST',
@@ -174,7 +177,7 @@ function popup_edit_device(devicename) {
 				$("#username_" + item.type).val(item.username);
 				$("#password_" + item.type).val(item.password);
 				$("#address_" + item.type).val(item.address);
-				$("#edit_" + item.module).val(item.name);
+				$("#edit_" + item.type).val(item.name);
 				$("#popup_device_" + item.type ).popup( "open" );
 			}
 		});
@@ -190,6 +193,7 @@ function popup_edit_device(devicename) {
 function add_device(type) {
 
 	$("#savinghint_" + type).attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_SAVING">");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -243,6 +247,7 @@ function popup_delete_device(devicename) {
 function delete_device() {
 
 	$("#deletedevicehint").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_DELETING">");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -280,6 +285,7 @@ function update_ver()
 {
 	$("#currentversion").html("<TMPL_VAR COMMON.HINT_UPDATING>");
 	$("#availableversion").html("<TMPL_VAR COMMON.HINT_UPDATING>");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -309,12 +315,14 @@ function upgrade() {
 	$("#currentversion").html("<TMPL_VAR COMMON.HINT_UPDATING>");
 	$("#availableversion").html("<TMPL_VAR COMMON.HINT_UPDATING>");
 	$("#savinghint_upgrade").attr("style", "color:blue").html("<TMPL_VAR UPGRADE.HINT_SAVE_SAVING>");
-	console.log ("Upgrading MQTT-IO");
+	console.log ("Upgrading pysma-plus");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
 				action: 'upgrade',
+				secpin: secpin,
 			}
 		} )
 	.fail(function( data ) {
@@ -338,6 +346,7 @@ function saveMQTT() {
 	$(".MQTT").addClass("ui-state-disabled");
 	$("#savinghint_mqtt").attr("style", "color:blue").html("<TMPL_VAR COMMON.HINT_SAVING>");
 	console.log ("Saving MQTT");
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
@@ -367,11 +376,13 @@ function saveMQTT() {
 function getconfig() {
 
 	// Ajax request
+	secpin = sessionStorage.getItem("securePIN");
 	$.ajax({ 
 		url:  'ajax.cgi',
 		type: 'POST',
 		data: {
-			action: 'getconfig'
+			action: 'getconfig',
+			secpin: secpin,
 		}
 	})
 	.fail(function( data ) {
