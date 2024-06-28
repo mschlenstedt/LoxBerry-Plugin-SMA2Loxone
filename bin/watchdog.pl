@@ -125,7 +125,7 @@ sub start
 		$sublog->default;
 		LOGSTART "Starting SMA2Loxone for $devicename";
 		LOGINF "Starting SMA2Loxone for $devicename";
-		system ("python3 pysma2mqtt.py -d $devicename -l $loglevel >> $sublogfile 2>&1 &");
+		system ("python3 pysma2mqtt.py -d '$devicename' -l $loglevel >> $sublogfile 2>&1 &");
 		LOGEND "";
 		$log->default;
 		my $output = qx(pgrep -f pysma2mqtt.py -d $devicename);
