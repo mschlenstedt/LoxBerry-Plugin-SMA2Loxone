@@ -44,7 +44,7 @@ PBIN=$LBPBIN/$PDIR
 
 echo "<INFO> Check if Python Version is at least 3.11 (Debian Bookworm)"
 
-debianv=$(cat debian_version | cut -d. -f1)
+debianv=$(cat /etc/debian_version | cut -d. -f1)
 pythonv=$(python3 -V)
 if [ $debianv -gt "11" ]; then
 	echo "<OK> Python Version is OK: Debian $debianv / $pythonv"
