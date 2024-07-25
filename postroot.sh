@@ -67,7 +67,7 @@ else
 fi 
 
 echo "<INFO> Start installing Python aiomqtt..."
-yes | python3 -m pip install --upgrade aiomqtt
+yes | python3 -m pip install --upgrade aiomqtt==2.0.1
 INSTALLED=$(pip3 list --format=columns | grep "aiomqtt" | grep -v grep | wc -l)
 if [ ${INSTALLED} -ne "0" ]; then
 	echo "<OK> Python aiomqtt installed successfully."
