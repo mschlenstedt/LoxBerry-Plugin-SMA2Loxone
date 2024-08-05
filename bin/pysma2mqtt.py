@@ -73,6 +73,26 @@ def readconfig(device):
         log.critical("Cannot read plugin configuration")
         sys.exit()
 
+def print_table(sensors: Sensors) -> None:
+    """Print sensors formatted as table."""
+    if len(sensors) == 0:
+        log.error("No Sensors found!")
+    for sen in sensors:
+        if sen.value is None:
+            log.info("{:>25}".format(sen.name))
+        else:
+            name = sen.name
+            if sen.key:
+                name = sen.key
+            log.info(
+                "{:>25}{:>15} {} {} {}".format(
+                    name,
+                    str(sen.value),
+                    sen.unit if sen.unit else "",
+                    sen.mapped_value if sen.mapped_value else "",
+                    sen.range if sen.range else "",
+                )
+            )
 
 async def main_loop(args: argparse.Namespace) -> None:
     """Run main loop."""
