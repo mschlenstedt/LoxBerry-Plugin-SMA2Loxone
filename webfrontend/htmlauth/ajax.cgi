@@ -164,6 +164,7 @@ if( $q->{action} eq "device" && $secpinok ){
 			password => $q->{'password'},
 			address => $q->{'address'},
 		);
+		$device{'ssl'} = "1" if ($q->{'ssl'} eq "true");
 		# Save
 		push @{$cfg->{'devices'}}, \%device;
 		$jsonobj->write();

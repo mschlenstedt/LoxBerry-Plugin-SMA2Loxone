@@ -179,6 +179,7 @@ function popup_edit_device(devicename) {
 				$("#address_" + item.type).val(item.address);
 				$("#edit_" + item.type).val(item.name);
 				$("#popup_device_" + item.type ).popup( "open" );
+				if (item.ssl) { $("#ssl_" + item.type ).prop("checked", true).checkboxradio("refresh") };
 			}
 		});
 	})
@@ -203,6 +204,7 @@ function add_device(type) {
 				username: $("#username_" + type).val(),
 				password: $("#password_" + type).val(),
 				address: $("#address_" + type).val(),
+				ssl: $("#ssl_" + type).is(":checked"),
 				type: $("#type_" + type).val(),
 				edit: $("#edit_" + type).val(),
 				secpin: secpin,
@@ -252,6 +254,7 @@ function delete_device() {
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
+				secpin: secpin,
 				action: 'deletedevice',
 				name: $("#deletedevicename").html(),
 			}
