@@ -53,7 +53,7 @@ def readconfig(device):
         # Set default values
         if int(pconfig['delay']) < 2:
             log.warning("Delay set smaller than 2 seconds. Setting it to 2 seconds.")
-            pconfig['delay'] = 10
+            pconfig['delay'] = 2
         if str(pconfig['topic']) == "":
             log.warning("MQTT Topic is not set. Set it to default topic 'sma2mqtt'.")
             pconfig['topic'] = "sma2mqtt"
@@ -72,28 +72,6 @@ def readconfig(device):
     except:
         log.critical("Cannot read plugin configuration")
         sys.exit()
-
-
-def print_table(sensors: Sensors) -> None:
-    """Print sensors formatted as table."""
-    if len(sensors) == 0:
-        log.error("No Sensors found!")
-    for sen in sensors:
-        if sen.value is None:
-            log.info("{:>25}".format(sen.name))
-        else:
-            name = sen.name
-            if sen.key:
-                name = sen.key
-            log.info(
-                "{:>25}{:>15} {} {} {}".format(
-                    name,
-                    str(sen.value),
-                    sen.unit if sen.unit else "",
-                    sen.mapped_value if sen.mapped_value else "",
-                    sen.range if sen.range else "",
-                )
-            )
 
 
 async def main_loop(args: argparse.Namespace) -> None:
@@ -124,13 +102,19 @@ async def main_loop(args: argparse.Namespace) -> None:
     log.info("Running for Device %s" % str(item['name']))
     log.setLevel(numeric_loglevel)
 
+    # Use SSL if configured
+    devurl = str(item['address'])
+    if "ssl" in item:
+        if item['ssl'] == "1":
+            devurl = "https://" + str(item['address'])
+
     # Read sensor
     async with aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(ssl=False)
     ) as session:
         user = str(item['username'])
         password = str(item['password'])
-        url = str(item['address'])
+        url = str(devurl)
         accessmethod = str(item['type'])
         delay = float(pconfig['delay'])
 
