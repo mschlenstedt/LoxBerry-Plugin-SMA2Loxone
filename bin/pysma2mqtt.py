@@ -171,7 +171,6 @@ async def main_loop(args: argparse.Namespace) -> None:
                 port=int(mqttconfig['port']) if mqttconfig['port'] else 1883,
                 username=mqttconfig['username'],
                 password=mqttconfig['password'],
-                identifier="12312312312",
                 protocol=ProtocolVersion.V31,
                 timeout=10,
             ) as client:
