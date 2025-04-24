@@ -79,12 +79,12 @@ def print_table(sensors: Sensors) -> None:
         log.error("No Sensors found!")
     for sen in sensors:
         if sen.value is None:
-            log.info("{:>25}".format(sen.name))
+            log.debug("{:>25}".format(sen.name))
         else:
             name = sen.name
             if sen.key:
                 name = sen.key
-            log.info(
+            log.debug(
                 "{:>25}{:>15} {} {} {}".format(
                     name,
                     str(sen.value),
