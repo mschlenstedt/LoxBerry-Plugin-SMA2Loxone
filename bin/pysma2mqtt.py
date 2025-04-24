@@ -190,6 +190,8 @@ async def main_loop(args: argparse.Namespace) -> None:
                                 print_table(sensors[deviceId])
                         except TimeoutError as e:
                             log.error("Timeout", e)
+                        except pysma.exceptions.SmaConnectionException as e:
+                            log.error(e.message, e)
                     await asyncio.sleep(delay)
         finally:
             log.info("Closing Session...")
