@@ -2,19 +2,17 @@
 """Basic usage example and testing of pysma."""
 import argparse
 import asyncio
+import json
 import logging
+import os
 import queue
 import signal
 import sys
 from typing import Any
-from urllib.parse import urlparse
-import json
-import os
 
 import aiohttp
-from aiomqtt import Client, ProtocolVersion
-
 import pysmaplus as pysma
+from aiomqtt import Client, ProtocolVersion
 from pysmaplus.sensor import Sensors
 
 VAR: dict[str, Any] = {}
