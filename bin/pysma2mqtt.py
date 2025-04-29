@@ -94,8 +94,8 @@ def print_table(sensors: Sensors) -> None:
                 )
             )
 
-async def main_loop(args: argparse.Namespace) -> None:
-    """Run main loop."""
+async def reconnect_loop(args: argparse.Namespace) -> None:
+    """Run reconnect loop."""
 
     # Logging with standard LoxBerry log format
     if args.loglevel == "":
@@ -128,6 +128,22 @@ async def main_loop(args: argparse.Namespace) -> None:
         if item['ssl'] == "1":
             devurl = "https://" + str(item['address'])
 
+    delay = float(pconfig['delay'])
+
+    VAR["running"] = True
+    while VAR.get("running"):
+        try:
+            log.info(f"Connecting to {devurl}")
+            await main_loop(devurl, item)
+        except Exception as e:
+            log.error(f"Unknown error occured in MainLoop: {e}")
+
+        await asyncio.sleep(delay)
+
+
+async def main_loop(devurl: str, item ) -> None:
+    """Run main loop."""
+
     # Read sensor
     async with aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(ssl=False)
@@ -153,7 +169,6 @@ async def main_loop(args: argparse.Namespace) -> None:
             return
         # We should not get any exceptions, but if we do we will close the session.
         try:
-            VAR["running"] = True
             devicelist = await VAR["sma"].device_list()
             for deviceId, deviceData in devicelist.items():
                 for name, value in deviceData.asDict().items():
@@ -190,8 +205,6 @@ async def main_loop(args: argparse.Namespace) -> None:
                                 print_table(sensors[deviceId])
                         except TimeoutError as e:
                             log.error("Timeout", e)
-                        except pysma.exceptions.SmaConnectionException as e:
-                            log.error(e.message, e)
                     await asyncio.sleep(delay)
         finally:
             log.info("Closing Session...")
@@ -243,7 +256,7 @@ async def main() -> None:
         VAR["running"] = False
 
     signal.signal(signal.SIGINT, _shutdown)
-    await main_loop(args)
+    await reconnect_loop(args)
 
 
 if __name__ == "__main__":
