@@ -2,19 +2,17 @@
 """Basic usage example and testing of pysma."""
 import argparse
 import asyncio
+import json
 import logging
+import os
 import queue
 import signal
 import sys
 from typing import Any
-from urllib.parse import urlparse
-import json
-import os
 
 import aiohttp
-from aiomqtt import Client, ProtocolVersion
-
 import pysmaplus as pysma
+from aiomqtt import Client, ProtocolVersion
 from pysmaplus.sensor import Sensors
 
 VAR: dict[str, Any] = {}
@@ -79,12 +77,12 @@ def print_table(sensors: Sensors) -> None:
         log.error("No Sensors found!")
     for sen in sensors:
         if sen.value is None:
-            log.info("{:>25}".format(sen.name))
+            log.debug("{:>25}".format(sen.name))
         else:
             name = sen.name
             if sen.key:
                 name = sen.key
-            log.info(
+            log.debug(
                 "{:>25}{:>15} {} {} {}".format(
                     name,
                     str(sen.value),
@@ -94,8 +92,8 @@ def print_table(sensors: Sensors) -> None:
                 )
             )
 
-async def main_loop(args: argparse.Namespace) -> None:
-    """Run main loop."""
+async def reconnect_loop(args: argparse.Namespace) -> None:
+    """Run reconnect loop."""
 
     # Logging with standard LoxBerry log format
     if args.loglevel == "":
@@ -128,6 +126,22 @@ async def main_loop(args: argparse.Namespace) -> None:
         if item['ssl'] == "1":
             devurl = "https://" + str(item['address'])
 
+    delay = float(pconfig['delay'])
+
+    VAR["running"] = True
+    while VAR.get("running"):
+        try:
+            log.info(f"Connecting to {devurl}")
+            await main_loop(devurl, item)
+        except Exception as e:
+            log.error(f"Unknown error occured in MainLoop: {e}")
+
+        await asyncio.sleep(delay)
+
+
+async def main_loop(devurl: str, item ) -> None:
+    """Run main loop."""
+
     # Read sensor
     async with aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(ssl=False)
@@ -153,7 +167,6 @@ async def main_loop(args: argparse.Namespace) -> None:
             return
         # We should not get any exceptions, but if we do we will close the session.
         try:
-            VAR["running"] = True
             devicelist = await VAR["sma"].device_list()
             for deviceId, deviceData in devicelist.items():
                 for name, value in deviceData.asDict().items():
@@ -241,7 +254,7 @@ async def main() -> None:
         VAR["running"] = False
 
     signal.signal(signal.SIGINT, _shutdown)
-    await main_loop(args)
+    await reconnect_loop(args)
 
 
 if __name__ == "__main__":

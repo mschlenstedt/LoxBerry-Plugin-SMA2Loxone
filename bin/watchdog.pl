@@ -106,7 +106,7 @@ sub start
 	$loglevel = "CRITICAL" if ($log->loglevel() <= 2);
 	$loglevel = "ERROR" if ($log->loglevel() eq 3);
 	$loglevel = "WARNING" if ($log->loglevel() eq 4 || $log->loglevel() eq 5);
-	$loglevel = "DEBUG" if ($log->loglevel() eq 6 || $log->loglevel() eq 7);
+	$loglevel = "DEBUG" if ($log->loglevel() eq 7);
 
 	LOGINF "Starting SMA2Loxone...";
 	system ("pkill -f 'pysma2mqtt.py'");
