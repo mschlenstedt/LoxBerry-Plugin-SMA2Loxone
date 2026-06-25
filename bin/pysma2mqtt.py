@@ -11,8 +11,8 @@ import sys
 from typing import Any
 
 import aiohttp
+import paho.mqtt.client as mqtt
 import pysmaplus as pysma
-from aiomqtt import Client, ProtocolVersion
 from pysmaplus.sensor import Sensors
 
 VAR: dict[str, Any] = {}
@@ -139,6 +139,46 @@ async def reconnect_loop(args: argparse.Namespace) -> None:
         await asyncio.sleep(delay)
 
 
+def connect_mqtt() -> mqtt.Client:
+    """Create, connect and start a paho-mqtt client.
+
+    Works with paho-mqtt v1.x (Debian bookworm) and v2.x (Debian trixie).
+    Only the constructor differs: v2.x requires a callback API version, v1.x
+    does not accept that argument. We only publish, so no callbacks are needed.
+    """
+    try:
+        # paho-mqtt 2.x
+        client = mqtt.Client(
+            mqtt.CallbackAPIVersion.VERSION1,
+            protocol=mqtt.MQTTv31,
+        )
+    except (AttributeError, TypeError):
+        # paho-mqtt 1.x (no CallbackAPIVersion)
+        client = mqtt.Client(protocol=mqtt.MQTTv31)
+
+    if mqttconfig.get('username'):
+        client.username_pw_set(
+            mqttconfig['username'],
+            mqttconfig['password'] if mqttconfig.get('password') else None,
+        )
+
+    port = int(mqttconfig['port']) if mqttconfig['port'] else 1883
+    client.connect(mqttconfig['hostname'], port, keepalive=60)
+    # Run the network loop in a background thread. publish() is then
+    # thread-safe, non-blocking and auto-reconnects on connection loss.
+    client.loop_start()
+    return client
+
+
+def mqtt_payload(value: Any) -> Any:
+    """Coerce a sensor value into a paho-accepted payload type."""
+    if isinstance(value, bool):
+        return int(value)
+    if value is None or isinstance(value, (str, int, float, bytes, bytearray)):
+        return value
+    return str(value)
+
+
 async def main_loop(devurl: str, item ) -> None:
     """Run main loop."""
 
@@ -179,14 +219,8 @@ async def main_loop(devurl: str, item ) -> None:
                 for sensor in sensors[deviceId]:
                     sensor.enabled = True
             log.info("Sending received values to MQTT...")
-            async with Client(
-                mqttconfig['hostname'],
-                port=int(mqttconfig['port']) if mqttconfig['port'] else 1883,
-                username=mqttconfig['username'],
-                password=mqttconfig['password'],
-                protocol=ProtocolVersion.V31,
-                timeout=10,
-            ) as client:
+            client = connect_mqtt()
+            try:
                 while VAR.get("running"):
                     for deviceId in devicelist.keys():
                         try:
@@ -196,14 +230,17 @@ async def main_loop(devurl: str, item ) -> None:
                                 if name is None:
                                     continue
                                 topic=str(item['name'])
-                                await client.publish(
+                                client.publish(
                                     f"{pconfig['topic']}/{topic}/{name}",
-                                    payload=sen.value,
+                                    payload=mqtt_payload(sen.value),
                                 )
                                 print_table(sensors[deviceId])
                         except TimeoutError as e:
                             log.error("Timeout", e)
                     await asyncio.sleep(delay)
+            finally:
+                client.loop_stop()
+                client.disconnect()
         finally:
             log.info("Closing Session...")
             await VAR["sma"].close_session()

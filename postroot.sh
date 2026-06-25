@@ -66,16 +66,17 @@ else
 	exit 2;
 fi 
 
-echo "<INFO> Start installing Python aiomqtt..."
-yes | python3 -m pip install --upgrade aiomqtt==2.0.1
-INSTALLED=$(pip3 list --format=columns | grep "aiomqtt" | grep -v grep | wc -l)
-if [ ${INSTALLED} -ne "0" ]; then
-	echo "<OK> Python aiomqtt installed successfully."
+# MQTT is provided by paho-mqtt, installed from apt (see dpkg/apt:
+# python3-paho-mqtt). This avoids the pip/apt conflict with aiomqtt on
+# newer LoxBerry/Debian releases (bookworm/trixie ship aiomqtt via apt).
+echo "<INFO> Checking Python paho-mqtt (installed via apt/dpkg)..."
+if python3 -c "import paho.mqtt.client" 2>/dev/null; then
+	echo "<OK> Python paho-mqtt is available."
 else
-	echo "<WARNING> Python aiomqtt installation failed! The plugin will not work without."
+	echo "<WARNING> Python paho-mqtt is not available! The plugin will not work without."
 	echo "<WARNING> Giving up."
 	exit 2;
-fi 
+fi
 
 echo "<INFO> Adjusting permissions..."
 chown root:root $PBIN/upgrade.sh
